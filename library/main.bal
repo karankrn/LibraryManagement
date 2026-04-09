@@ -6,41 +6,6 @@ import ballerina/http;
 // HTTP listener for the library management API
 listener http:Listener httpListener = check new (serverPort);
 
-// Root service providing API information and available endpoints
-service / on httpListener {
-    // Returns API information and available endpoints
-    //
-    // + return - JSON object with API details and endpoint documentation
-    resource function get .() returns json {
-        return {
-            message: "Library Management System API",
-            version: "1.0.0",
-            endpoints: {
-                books: {
-                    "POST /library/books": "Add a new book",
-                    "GET /library/books": "Get all books",
-                    "GET /library/books/{isbn}": "Get a book by ISBN",
-                    "PUT /library/books/{isbn}": "Update a book",
-                    "DELETE /library/books/{isbn}": "Delete a book"
-                },
-                members: {
-                    "POST /library/members": "Register a new member",
-                    "GET /library/members": "Get all members",
-                    "GET /library/members/{memberId}": "Get a member by ID",
-                    "PUT /library/members/{memberId}": "Update a member",
-                    "DELETE /library/members/{memberId}": "Delete a member"
-                },
-                borrowing: {
-                    "POST /library/borrow": "Borrow a book",
-                    "POST /library/return/{borrowId}": "Return a book",
-                    "GET /library/borrow": "Get all borrow records",
-                    "GET /library/borrow/member/{memberId}": "Get borrow records by member"
-                }
-            }
-        };
-    }
-}
-
 // Main library service providing all library management operations
 service /library on httpListener {
 

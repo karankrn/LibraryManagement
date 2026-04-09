@@ -45,10 +45,6 @@ bal run -- -CserverPort=8080
 
 ## API Endpoints
 
-### Root Endpoint
-
-- **GET** `/` - Returns API information and available endpoints
-
 ### Book Endpoints
 
 - **POST** `/library/books` - Add a new book
