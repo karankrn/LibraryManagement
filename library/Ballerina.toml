@@ -1,0 +1,9 @@
+[package]
+org = "ltimindtee"
+name = "librarymanagement"
+version = "0.1.0"
+distribution = "2201.13.1"
+title = "LibraryManagement"
+
+[build-options]
+sticky = true
