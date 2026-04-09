@@ -1,5 +1,9 @@
 // Book management functions
 
+// Adds a new book to the library system
+//
+// + bookRequest - Book details to add
+// + return - The newly created book with auto-generated ISBN
 isolated function addBook(BookRequest bookRequest) returns Book {
     string isbn = generateIsbn();
     Book newBook = {
@@ -16,6 +20,10 @@ isolated function addBook(BookRequest bookRequest) returns Book {
     return newBook;
 }
 
+// Retrieves a book by its ISBN
+//
+// + isbn - ISBN of the book to retrieve
+// + return - The book if found, null otherwise
 isolated function getBook(string isbn) returns Book? {
     lock {
         Book? book = booksTable[isbn];
@@ -26,12 +34,21 @@ isolated function getBook(string isbn) returns Book? {
     }
 }
 
+// Retrieves all books in the library
+//
+// + return - Array of all books
 isolated function getAllBooks() returns Book[] {
     lock {
         return booksTable.toArray().clone();
     }
 }
 
+// Updates an existing book's details
+// Note: Available copies are adjusted based on the change in total copies
+//
+// + isbn - ISBN of the book to update
+// + bookRequest - Updated book details
+// + return - The updated book if found, null otherwise
 isolated function updateBook(string isbn, BookRequest bookRequest) returns Book? {
     Book? existingBook = ();
     lock {
@@ -64,6 +81,10 @@ isolated function updateBook(string isbn, BookRequest bookRequest) returns Book?
     return updatedBook;
 }
 
+// Deletes a book from the library system
+//
+// + isbn - ISBN of the book to delete
+// + return - True if book was deleted, false if not found
 isolated function deleteBook(string isbn) returns boolean {
     lock {
         Book? removedBook = booksTable.removeIfHasKey(isbn);
@@ -73,6 +94,10 @@ isolated function deleteBook(string isbn) returns boolean {
 
 // Member management functions
 
+// Registers a new member in the library system
+//
+// + memberRequest - Member details to register
+// + return - The newly created member with auto-generated member ID
 isolated function addMember(MemberRequest memberRequest) returns Member {
     string memberId = generateMemberId();
     Member newMember = {
@@ -87,6 +112,10 @@ isolated function addMember(MemberRequest memberRequest) returns Member {
     return newMember;
 }
 
+// Retrieves a member by their ID
+//
+// + memberId - ID of the member to retrieve
+// + return - The member if found, null otherwise
 isolated function getMember(string memberId) returns Member? {
     lock {
         Member? member = membersTable[memberId];
@@ -97,12 +126,20 @@ isolated function getMember(string memberId) returns Member? {
     }
 }
 
+// Retrieves all registered members
+//
+// + return - Array of all members
 isolated function getAllMembers() returns Member[] {
     lock {
         return membersTable.toArray().clone();
     }
 }
 
+// Updates an existing member's details
+//
+// + memberId - ID of the member to update
+// + memberRequest - Updated member details
+// + return - The updated member if found, null otherwise
 isolated function updateMember(string memberId, MemberRequest memberRequest) returns Member? {
     Member? existingMember = ();
     lock {
@@ -129,6 +166,10 @@ isolated function updateMember(string memberId, MemberRequest memberRequest) ret
     return updatedMember;
 }
 
+// Deletes a member from the library system
+//
+// + memberId - ID of the member to delete
+// + return - True if member was deleted, false if not found
 isolated function deleteMember(string memberId) returns boolean {
     lock {
         Member? removedMember = membersTable.removeIfHasKey(memberId);
@@ -138,6 +179,11 @@ isolated function deleteMember(string memberId) returns boolean {
 
 // Borrowing management functions
 
+// Processes a book borrowing request
+// Validates member and book existence, checks availability, and updates inventory
+//
+// + borrowRequest - Borrowing request details
+// + return - The created borrow record, or an error if validation fails
 isolated function borrowBook(BorrowRequest borrowRequest) returns BorrowRecord|error {
     string borrowId = generateBorrowId();
     string currentDate = getCurrentDate();
@@ -200,6 +246,11 @@ isolated function borrowBook(BorrowRequest borrowRequest) returns BorrowRecord|e
     return newBorrowRecord;
 }
 
+// Processes a book return
+// Updates the borrow record with return date and increments available copies
+//
+// + borrowId - ID of the borrow record
+// + return - The updated borrow record, or an error if validation fails
 isolated function returnBook(string borrowId) returns BorrowRecord|error {
     string currentDate = getCurrentDate();
     
@@ -263,12 +314,19 @@ isolated function returnBook(string borrowId) returns BorrowRecord|error {
     return updatedBorrowRecord;
 }
 
+// Retrieves all borrow records in the system
+//
+// + return - Array of all borrow records
 isolated function getAllBorrowRecords() returns BorrowRecord[] {
     lock {
         return borrowRecordsTable.toArray().clone();
     }
 }
 
+// Retrieves all borrow records for a specific member
+//
+// + memberId - ID of the member
+// + return - Array of borrow records for the specified member
 isolated function getBorrowRecordsByMember(string memberId) returns BorrowRecord[] {
     lock {
         BorrowRecord[] allRecords = borrowRecordsTable.toArray();
